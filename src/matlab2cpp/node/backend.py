@@ -624,6 +624,7 @@ See also:
                     "For", "Parfor", "While") and node.project.builder.original:
         code_tmp = ["// " + line for line in node.code.splitlines()]
         value = "\n".join(code_tmp) + "\n" + value
+        value = value.replace("%++", "")
         value = value.replace("%", "__percent__")
     node.str = value
 
@@ -689,7 +690,7 @@ See also:
                 #if mconvert.h not found in directory, create the file
                 if not os.path.isfile(output_file_path) or "mconvert.h" not in created_file:
                     f = open(output_file_path, "w")
-                    f.write(matlab2cpp.m2cpp.code)
+                    f.write(m2cpp.code)
                     f.close()
                     created_file.append("mconvert.h")
             except:

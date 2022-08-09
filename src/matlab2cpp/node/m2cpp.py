@@ -242,7 +242,7 @@ namespace m2cpp {
     }
 
     template <typename eT, typename fT>
-    inline typename arma::enable_if2 < arma::is_complex<typename eT::elem_type>::value || arma::is_complex<typename fT::elem_type>::value,
+    inline typename arma::enable_if2 < arma::is_cx<typename eT::elem_type>::value || arma::is_cx<typename fT::elem_type>::value,
                                        arma::Mat<typename std::complex< typename arma::get_pod_type<eT>::result > > >::result
         conv2(const arma::Mat<typename eT::elem_type>& A, const arma::Mat<typename fT::elem_type>& B) {
         uword n = A.n_rows + B.n_rows - 1;
@@ -387,6 +387,21 @@ namespace m2cpp {
     }
 
     template<typename T>
+    inline Mat<T> sortrows(const Mat<T>& a, uword index) {
+        typedef Mat<T> Matrix;
+        if (index == 1)
+        {
+            return sortrows<Matrix>(a);
+        }
+
+        Matrix b = a;
+        b.swap_cols(0, index-1);
+        Matrix c = sortrows(b);
+        c.swap_cols(0, index-1);
+        return c;
+    }
+
+     template<typename T>
     inline void unique_rows(T& C, const T& a) {
 
        arma::uvec dum;
@@ -437,6 +452,25 @@ namespace m2cpp {
     inline double toc(double start) {
        return timer_.toc() - start;
     }
+}
+
+
+namespace arma 
+{
+arma_warn_unused
+arma_inline
+typename
+enable_if2
+  <
+  is_arma_type<mat>::value,
+  const Op<mat, op_repmat>
+  >::result
+repmat(const double& A, const uword r, const uword c)
+  {
+    mat m(1,1, fill::value(A));
+   
+    return repmat(m, r,c);
+  }
 }
 
 

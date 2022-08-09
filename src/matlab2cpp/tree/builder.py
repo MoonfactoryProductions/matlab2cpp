@@ -172,6 +172,9 @@ Example::
                 code.append(ln)
         code = '\n'.join(code)
 
+        # %++ is not seen as code
+        code = code.replace("%++", "")
+
         self.code = code + "\n\n\n"
         self.create_program(name)
 
