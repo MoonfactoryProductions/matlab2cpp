@@ -37,6 +37,10 @@ reserved = {
     'bitshift',
     "true", "false",
     "repmat",
+    "vertcat",
+    "std",
+    "strcat",
+    "mat2str",
 }
 
 # Common attribute
@@ -273,7 +277,7 @@ def Get_and(node):
     return "(", "*", ")"
 
 def Get_or(node):
-    return "("+"+".join(["%(" + i +")s*%(" + i + ")s" \
+    return "("+"+".join(["%(" + str(i) +")s*%(" + str(i) + ")s" \
             for i in range(len(node))])+")"
 
 def Get_not(node):
@@ -305,7 +309,8 @@ def Get_all(node):
     return "all(", ", ", ")"
 
 def Get_isequal(node):
-    return "%(0)s == %(1)s"
+    node.include('m2cpp') 
+    return "((m2cpp::min(%(0)s == %(1)s) == 1)?1:0)"
 
 def Var_return(node):
 
@@ -552,7 +557,7 @@ def Get_min(node):
 
     # single arg
     if len(node) == 1:
-        return "arma::min(%(0)s)"
+        return "m2cpp::min(%(0)s)"
 
     # two args
     if len(node) == 2:
@@ -624,7 +629,8 @@ def Get_max(node):
 
     # number of args is ...
     if len(node) == 1:
-        return "arma::max(%(0)s)"
+        node.include("m2cpp")
+        return "m2cpp::max(%(0)s)"
 
     if len(node) == 2:
         if node[0].dim and node[1].dim:
@@ -1470,7 +1476,7 @@ def Get_class_typestring(node):
     elif node.parent.cls == 'Get':
         # For handlers that use node_utils.parseNumDimsAndExplicitMem()
         # we pass the string to them. Otherwise we mark the arg for deletion
-        if node.parent.name in ['zeros', 'ones', 'repmat']:
+        if node.parent.name in ['zeros', 'ones', 'repmat', 'vertcat', 'std']:
             return "%(0)s"
         
     return "_M2CPP_DELETE_ITEM_"
@@ -1486,7 +1492,7 @@ def Get_cat(node):
         return node.code
 
 def Get_strcmp(node):  
-    return "%(0)s == %(1)s"
+    return "(%(0)s == %(1)s)"
 
 def Get_strcmpi(node):
     node.include("strings")
@@ -1543,6 +1549,29 @@ def Get_bitshift(node):
                 return "((%(0)s) >> " + str(-shiftByConstInt) + ")"
             
     return "mat_bitshift(%(0)s, %(1)s)"
+
+def Get_vertcat(node):
+    return "arma::join_cols(", ", ", ")"
+
+def Get_std(node):
+    if len(node) == 1:
+        return "arma::stddev(", ")"
+    if len(node) == 2:
+        return "arma::stddev(", ", ", ")"
+    node.error("std: too many arguments")
+    return ""
+
+def Get_strcat(node):
+    return "((", ") + (", "))"
+
+def Get_mat2str(node):
+    if len(node) == 1:
+        node.include("m2cpp")
+        return "m2cpp::to_string(%(0)s)"
+    else:
+        node.error("mat2str should take one argument")
+        return ""
+
 
 def Get_repmat(node):
     dimIdxStart = 1

@@ -2,6 +2,7 @@ code = r"""#ifndef MCONVERT_H
 #define MCONVERT_H
 
 #include <armadillo>
+#include <sstream>
 using namespace arma;
 
 namespace m2cpp {
@@ -451,6 +452,59 @@ namespace m2cpp {
 
     inline double toc(double start) {
        return timer_.toc() - start;
+    }
+
+#define FUNC2D(X, F)   \
+    template <typename T>   \
+    inline T F(const arma::X<T> &item)  \
+    {   \
+        return arma::F(arma::F(item));  \
+    }
+
+#define FUNC1D(X, F)   \
+    template <typename T>   \
+    inline T F(const arma::X<T> &item)  \
+    {   \
+        return arma::F(item);   \
+    }
+
+#define FUNC0D(X, F)   \
+    inline X F(const X item)  \
+    {   \
+        return item;    \
+    }
+
+
+#define FUNC(F) \
+        FUNC2D(Mat, F) \
+        FUNC2D(subview, F) \
+        FUNC1D(Row, F)  \
+        FUNC1D(subview_row, F)  \
+        FUNC1D(Col, F)  \
+        FUNC1D(subview_col, F)  \
+        FUNC0D(double, F)  \
+        FUNC0D(float, F) \
+                            \
+        template <typename elem_type, typename derived>   \
+        inline elem_type F(const arma::Base<elem_type, derived> &item)    \
+        {   \
+            return F<elem_type>(item.eval());  \
+        }
+
+    FUNC(max)
+    FUNC(min)
+
+#undef FUNC
+#undef FUNC0D
+#undef FUNC1D
+#undef FUNC2D
+
+    template <typename T>
+    inline std::string to_string(const T &item)
+    {
+        std::ostringstream ss;
+        ss << item;
+        return ss.str();
     }
 }
 
