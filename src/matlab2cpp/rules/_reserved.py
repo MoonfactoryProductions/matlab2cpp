@@ -38,6 +38,7 @@ reserved = {
     "true", "false",
     "repmat",
     "vertcat",
+    "horzcat",
     "std",
     "strcat",
     "mat2str",
@@ -1476,7 +1477,7 @@ def Get_class_typestring(node):
     elif node.parent.cls == 'Get':
         # For handlers that use node_utils.parseNumDimsAndExplicitMem()
         # we pass the string to them. Otherwise we mark the arg for deletion
-        if node.parent.name in ['zeros', 'ones', 'repmat', 'vertcat', 'std']:
+        if node.parent.name in ['zeros', 'ones', 'repmat', 'horzcat', 'vertcat', 'std']:
             return "%(0)s"
         
     return "_M2CPP_DELETE_ITEM_"
@@ -1552,6 +1553,9 @@ def Get_bitshift(node):
 
 def Get_vertcat(node):
     return "arma::join_cols(", ", ", ")"
+
+def Get_horzcat(node):
+    return "arma::join_rows(", ", ", ")"
 
 def Get_std(node):
     if len(node) == 1:
