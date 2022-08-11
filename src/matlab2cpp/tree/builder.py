@@ -169,11 +169,18 @@ Example::
             if len(ln.strip()) == 0:
                 code.append('% __BLANK_LINE__')
             else:
+                # %++ is not seen as code, and everything before is removed
+                # This allows code like this:
+                # A %++ B
+                # to have A executed in Matlab, and B used for the transpilation
+                if "%++" in ln:
+                    index = ln.find('%++')
+                    # if % is present before... we don't remove the previous part of the line
+                    if not "%" in ln[0:index]:
+                        ln = ln[index + len('%++'):]
+
                 code.append(ln)
         code = '\n'.join(code)
-
-        # %++ is not seen as code
-        code = code.replace("%++", "")
 
         self.code = code + "\n\n\n"
         self.create_program(name)
