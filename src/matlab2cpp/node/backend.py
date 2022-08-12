@@ -370,6 +370,12 @@ Returns:
     return out
 
 
+def create_declare_global(node):
+    out = create_declare(node)
+    out.is_global = True
+    return out
+
+
 def suggest_datatype(node):
     """
 Backend for the :py:func:`~matlab2cpp.Node.suggest_datatype` function.

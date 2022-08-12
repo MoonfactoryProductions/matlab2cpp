@@ -40,6 +40,7 @@ reserved = {
     "vertcat",
     "horzcat",
     "std",
+    "sprintf",
     "strcat",
     "mat2str",
 }
@@ -1566,7 +1567,22 @@ def Get_std(node):
     return ""
 
 def Get_strcat(node):
-    return "((", ") + (", "))"
+    if len(node) == 2:
+       return "((%(0)s) + (%(1)s))"
+    node.error("strcat: not enough arguments")
+    return ""
+
+def Get_sprintf(node):
+    if len(node) < 1:
+       node.error("sprintf: not enough arguments")
+    node.include("m2cpp")
+    result = "m2cpp::sprintf("
+    for i in range(0,len(node)):
+        result += "(%(" + str(i) + ")s), "
+    result = result[:-2]
+    result += ")"
+    return result 
+
 
 def Get_mat2str(node):
     if len(node) == 1:

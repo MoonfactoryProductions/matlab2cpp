@@ -206,6 +206,8 @@ Examples:
             continue
 
         type = type_string(child)
+        if child.is_global:
+            type += " &"
 
         if type not in declares:
             declares[type] = []
@@ -225,21 +227,27 @@ Examples:
 
         # datatype
         out += "\n" + key + " "
+        global_type = False
 
         # all variables with that type
         for v in val:
 
             out += str(v)
+            global_type = v.is_global
             if v.name in structs:
 
                 structs_ = node.program[3]
                 struct = structs_[structs_.names.index(v.name)]
                 size = struct[struct.names.index("_size")].value
                 out += "[%s]" % size
+            if global_type:
+                out += "(::" + str(v) + ")"
 
             out += ", "
+            if global_type:
+                out += "&"
 
-        out = out[:-2] + " ;"
+        out = out[:-2 if not global_type else -3] + " ;"
 
     return out[1:]
 

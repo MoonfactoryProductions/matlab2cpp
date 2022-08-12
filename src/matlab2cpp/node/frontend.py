@@ -47,6 +47,8 @@ Attributes:
         A reference to the first ancestor where the  datatype does not
         automatically affect nodes  upwards. A list of these nodes are listed
         in  `matlab2cpp.reference.groups`.
+    is_global (bool):
+        In the case of a variable definition, true if the variable is a global one
     itype (list):
         Input/output include scope statements
     line (int):
@@ -123,6 +125,7 @@ Attributes:
     project = ref.Project_reference()
     group = ref.Group_reference()
     declare = ref.Declare_reference()
+    is_global = False
 
     ftypes = sup.Ftypes()
     itypes = sup.Itypes()
@@ -381,6 +384,15 @@ Returns:
     Node : the (newly) declared node
         """
         backend.create_declare(self)
+
+    def create_declare_global(self):
+        """
+Like create_declare, but for global variables
+
+Returns:
+    Node : the (newly) declared node
+        """
+        backend.create_declare_global(self)
 
     def suggest_datatype(self):
         """

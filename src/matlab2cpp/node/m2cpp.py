@@ -506,6 +506,37 @@ namespace m2cpp {
         ss << item;
         return ss.str();
     }
+
+    inline std::string sprintf(const char* format, ...)
+    {
+        std::string result;
+        va_list args, args_copy;
+
+        va_start(args, format);
+        va_copy(args_copy, args);
+
+        int len = vsnprintf(nullptr, 0, format, args);
+        if (len < 0) {
+            va_end(args_copy);
+            va_end(args);
+            throw std::runtime_error("vsnprintf error");
+        }
+
+        if (len > 0) {
+            result.resize(len+2);
+            // note: &result[0] is *guaranteed* only in C++11 and later
+            // to point to a buffer of contiguous memory with room for a
+            // null-terminator, but this "works" in earlier versions
+            // in *most* common implementations as well...
+            vsnprintf(&result[0], len+1, format, args_copy); // or result.data() in C++17 and later...
+            result.resize(len);
+        }
+
+        va_end(args_copy);
+        va_end(args);
+
+        return result; 
+    }
 }
 
 
