@@ -43,6 +43,7 @@ reserved = {
     "sprintf",
     "strcat",
     "mat2str",
+    "isnan",
 }
 
 # Common attribute
@@ -706,6 +707,11 @@ def Get_transpose(node):
     """
 
     return "arma::strans(%(0)s)"
+
+def Get_isnan(node):
+    node.include("m2cpp")
+    return "m2cpp::isnan(%(0)s)"
+
 
 def Get_ctranspose(node):
     """Complex transpose

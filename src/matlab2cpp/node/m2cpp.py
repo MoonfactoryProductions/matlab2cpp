@@ -454,36 +454,67 @@ namespace m2cpp {
        return timer_.toc() - start;
     }
 
-#define FUNC2D(X, F)   \
+
+    inline double isnan(const double m)
+    {
+        return ::isnan(m)?1:0;
+    }
+    inline float isnan(const float m)
+    {
+        return ::isnan(m)?1:0;
+    }
+
+    inline mat isnan(const mat &m)
+    {
+        mat n(m);
+
+        for(size_t i = 0; i < n.n_cols; ++i)
+        {
+            double *begin = n.colptr(i);
+            double *end = begin + n.n_cols;
+            while(begin < end)
+            {
+                *begin = isnan(*begin);
+                ++begin;
+            }
+        }
+
+        return n;
+    }
+
+
+
+
+#define FUNC2D(X, F, G)   \
     template <typename T>   \
     inline T F(const arma::X<T> &item)  \
     {   \
-        return arma::F(arma::F(item));  \
+        return G(G(item));  \
     }
 
-#define FUNC1D(X, F)   \
+#define FUNC1D(X, F, G)   \
     template <typename T>   \
     inline T F(const arma::X<T> &item)  \
     {   \
-        return arma::F(item);   \
+        return G(item);   \
     }
 
-#define FUNC0D(X, F)   \
+#define FUNC0D(X, F, G)   \
     inline X F(const X item)  \
     {   \
         return item;    \
     }
 
 
-#define FUNC(F) \
-        FUNC2D(Mat, F) \
-        FUNC2D(subview, F) \
-        FUNC1D(Row, F)  \
-        FUNC1D(subview_row, F)  \
-        FUNC1D(Col, F)  \
-        FUNC1D(subview_col, F)  \
-        FUNC0D(double, F)  \
-        FUNC0D(float, F) \
+#define FUNC(F, G) \
+        FUNC2D(Mat, F, G) \
+        FUNC2D(subview, F, G) \
+        FUNC1D(Row, F, G)  \
+        FUNC1D(subview_row, F, G)  \
+        FUNC1D(Col, F, G)  \
+        FUNC1D(subview_col, F, G)  \
+        FUNC0D(double, F, G)  \
+        FUNC0D(float, F, G) \
                             \
         template <typename elem_type, typename derived>   \
         inline elem_type F(const arma::Base<elem_type, derived> &item)    \
@@ -491,8 +522,8 @@ namespace m2cpp {
             return F<elem_type>(item.eval());  \
         }
 
-    FUNC(max)
-    FUNC(min)
+    FUNC(max, arma::max)
+    FUNC(min, arma::min)
 
 #undef FUNC
 #undef FUNC0D
