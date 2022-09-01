@@ -5,6 +5,8 @@ code = r"""#ifndef MCONVERT_H
 #include <sstream>
 using namespace arma;
 
+#define M2CPP_PERCENT   %
+
 namespace m2cpp {
 
     template<typename eT>
@@ -471,7 +473,7 @@ namespace m2cpp {
         for(size_t i = 0; i < n.n_cols; ++i)
         {
             double *begin = n.colptr(i);
-            double *end = begin + n.n_cols;
+            double *end = begin + n.n_rows;
             while(begin < end)
             {
                 *begin = isnan(*begin);

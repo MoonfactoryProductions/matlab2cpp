@@ -280,7 +280,8 @@ def Get_and(node):
     return "(", "*", ")"
 
 def Get_or(node):
-    return "("+"+".join(["%(" + str(i) +")s*%(" + str(i) + ")s" \
+    node.include('m2cpp') 
+    return "("+"+".join(["( %(" + str(i) +")s M2CPP_PERCENT %(" + str(i) + ")s )" \
             for i in range(len(node))])+")"
 
 def Get_not(node):
