@@ -1575,7 +1575,7 @@ def Get_std(node):
 
 def Get_strcat(node):
     if len(node) == 2:
-       return "((%(0)s) + (%(1)s))"
+        return "(std::string(%(0)s) + std::string(%(1)s))"
     node.error("strcat: not enough arguments")
     return ""
 
