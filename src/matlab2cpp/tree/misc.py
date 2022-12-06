@@ -689,7 +689,7 @@ def reserved(self, node, start):
 
         name = str(self.code[k:l]).split(".")[0]
         node = collection.Var(get, name)
-        node.create_declare()
+        node.create_declare_global()
 
         while self.code[k] not in ";\n":
             k += 1
