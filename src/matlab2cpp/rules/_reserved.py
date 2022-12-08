@@ -304,13 +304,17 @@ def Get_any(node):
 
 def Get_all(node):
 
-    # unkonwn datatype
-    if not node[0].num:
-        return "all(", ", ", ")"
-
     # scalar value
     if node[0].dim == 0:
         return "%(0)s"
+
+    # unkonwn datatype
+    if not node[0].num:
+        if len(node) == 2:
+            return "all(", ", ", "-1)"
+        else:
+            node.include('m2cpp') 
+            return "m2cpp::all(", ")"
 
     return "all(", ", ", ")"
 

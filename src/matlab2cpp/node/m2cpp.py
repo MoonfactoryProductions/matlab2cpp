@@ -533,13 +533,121 @@ namespace m2cpp {
 #undef FUNC2D
 
     template <typename T>
+    class Stringifier
+    {
+    public:
+        static inline std::string to_string(const T &item)
+        {
+            std::ostringstream ss;
+            ss << item;
+            return ss.str();
+        }
+    };
+
+    template<typename T1>
+    class Stringifier<arma::Base<typename T1::elem_type,T1> >
+    {
+    public:
+        static inline std::string to_string(const arma::Base<typename T1::elem_type,T1>& expr)
+        {
+            std::ostringstream ss;
+            const arma::Mat<typename T1::elem_type> X(expr);  // forcefully evaluate expression
+
+            for(uword row=0; row < X.n_rows; ++row)
+            {
+                for(uword col=0; col < X.n_cols; ++col) { ss << X(row,col) << '\t'; }
+
+                // determine when to print newlines
+                if( row != (X.n_rows-1) ) { ss << '\n'; }
+            }
+
+            return ss.str();
+        }
+    };
+
+    template<typename T1>
+    class Stringifier<typename arma::Mat<T1> >
+    {
+    public:
+        static inline std::string to_string(const arma::Mat<T1>& expr)
+        {
+            std::ostringstream ss;
+            const arma::Mat<T1> X(expr);  // forcefully evaluate expression
+
+            for(uword row=0; row < X.n_rows; ++row)
+            {
+                for(uword col=0; col < X.n_cols; ++col) { ss << X(row,col) << '\t'; }
+
+                // determine when to print newlines
+                if( row != (X.n_rows-1) ) { ss << '\n'; }
+            }
+
+            return ss.str();
+        }
+    };
+
+    template<>
+    class Stringifier<arma::SizeMat>
+    {
+    public:
+        static inline std::string to_string(const arma::SizeMat& expr)
+        {
+            std::ostringstream ss;
+            const arma::SizeMat X(expr);  // forcefully evaluate expression
+
+            ss << X[0] << "x" << X[1]; 
+
+            return ss.str();
+        }
+    };
+
+
+    template <typename T>
     inline std::string to_string(const T &item)
     {
-        std::ostringstream ss;
-        ss << item;
-        return ss.str();
+        return Stringifier<T>::to_string(item);
     }
 
+    template <typename T1>
+    inline std::string mat_to_string(const arma::Base<typename T1::elem_type,T1> &item)
+    {
+        return Stringifier<arma::Base<typename T1::elem_type,T1>>::to_string(item);
+    }
+
+    template <typename T1>
+    inline std::string mat_to_string(const arma::Mat<T1> &item)
+    {
+        return Stringifier<arma::Mat<T1>>::to_string(item);
+    }
+
+     inline std::string mat_to_string(const arma::SizeMat &item)
+    {
+        return Stringifier<arma::SizeMat>::to_string(item);
+    }
+
+
+    template <typename T1>
+    inline int all(const arma::Mat<T1> &X)
+    {
+            if (X.n_rows == 0 || X.n_cols == 0)
+            {
+                return 0;
+            }
+
+            for(uword row=0; row < X.n_rows; ++row)
+            {
+                for(uword col=0; col < X.n_cols; ++col) {
+                    if (X(row,col) == typename arma::Mat<T1>::elem_type(0))
+                    {
+                        return 0;
+                    }
+                }
+            }
+
+            return 1;
+    }
+
+ 
     inline std::string sprintf(const char* format, ...)
     {
         std::string result;
