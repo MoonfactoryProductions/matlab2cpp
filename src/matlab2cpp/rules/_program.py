@@ -94,15 +94,18 @@ def Header(node):
     func = node.program[1][node.program[1].names.index(node.name)]
     if func.backend == "func_return":
 
+        # Get the result type
+        typeStr = type_string(func[1][0])
+
         # if -ref, -reference flag option
         if node.project.builder.reference:
 
-            code = func[1][0].type + " " + func.name + "(" +\
+            code = typeStr + " " + func.name + "(" +\
                    ", ".join(["const " + type_string(p) + "& " + p.name if p.dim > 0 else
                            type_string(p) + " " + p.name for p in func[2]]) + ") ;"
 
         else:
-            code = func[1][0].type + " " + func.name + "(" +\
+            code = typeStr + " " + func.name + "(" +\
             ", ".join([type_string(p) + " " + p.name for p in func[2]]) + ") ;"
 
 

@@ -242,7 +242,9 @@ def function(self, parent, cur):
                                 for a in self.code[s:e+1]]):
                         self.syntaxerror(s, "return value")
 
-                    collection.Var(returns, self.code[s:e+1], cur=s,
+                    collection.Var(returns,
+                                   self.code[s:e+1],
+                                   cur=s,
                                    code=self.code[s:e+1])
 
         # single return
@@ -253,7 +255,9 @@ def function(self, parent, cur):
                 print("%4d   Return       " % cur, end="")
                 print(repr(self.code[start:end+1]))
 
-            collection.Var(returns, self.code[start:end+1], cur=start,
+            collection.Var(returns,
+                           self.code[start:end+1],
+                           cur=start,
                            code=self.code[start:end+1])
 
 

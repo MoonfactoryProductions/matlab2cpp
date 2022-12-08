@@ -42,6 +42,7 @@ reserved = {
     "std",
     "sprintf",
     "strcat",
+    "num2str",
     "mat2str",
     "isnan",
 }
@@ -281,7 +282,7 @@ def Get_and(node):
 
 def Get_or(node):
     node.include('m2cpp') 
-    return "("+"+".join(["( %(" + str(i) +")s M2CPP_PERCENT %(" + str(i) + ")s )" \
+    return "("+"+".join(["( (%(" + str(i) +")s) M2CPP_PERCENT (%(" + str(i) + ")s) )" \
             for i in range(len(node))])+")"
 
 def Get_not(node):
@@ -1594,9 +1595,17 @@ def Get_sprintf(node):
 def Get_mat2str(node):
     if len(node) == 1:
         node.include("m2cpp")
-        return "m2cpp::to_string(%(0)s)"
+        return "m2cpp::mat_to_string(%(0)s)"
     else:
         node.error("mat2str should take one argument")
+        return ""
+
+def Get_num2str(node):
+    if len(node) == 1:
+        node.include("m2cpp")
+        return "m2cpp::to_string(%(0)s)"
+    else:
+        node.error("num2str should take one argument")
         return ""
 
 
