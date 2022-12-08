@@ -45,6 +45,7 @@ reserved = {
     "num2str",
     "mat2str",
     "isnan",
+    "struct",
 }
 
 # Common attribute
@@ -1625,6 +1626,34 @@ def Assign_repmat(node):
     if '.set_size' in node[1].str:
         return "%(1)s ;" # delete the var = bit
     return "%(0)s = %(1)s ;"
+
+def Get_struct(node):
+    result = ""
+    if node.parent.cls == 'Assign' and node[0].dim in [None, 0]:
+        result = node.parent[0].str
+        if len(node) % 2 != 0:
+            node.error("Only the struct() variant where parameters are paired is supported")
+            return ""
+
+        for i in range(0,len(node),2):
+            if node.children[i].cls == 'String':
+                variable = node.children[i].value
+                result += ";\n" + node.parent[0].str + "." + variable + " = " + "(%(" + str(i+1) + ")s)"
+            else:
+                node.error("Only fields as strings are supported")
+                return ""
+
+    else:
+        result = " // struct ("
+        for i in range(0,len(node)):
+            if i != 0:
+                result += ", "
+            result += "(%(" + str(i) + ")s)"
+        result += ")"
+ 
+    return result 
+
+
 
 if __name__ == "__main__":
     import doctest
