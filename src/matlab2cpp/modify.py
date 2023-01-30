@@ -14,6 +14,8 @@ def preorder_transform_AST(node, nargin = False, suggest = False):
     if suggest:
         nodes = modify_find(nodes)
 
+    nodes = modify_struct(nodes)
+
     #a multiplication with a complex double results in complex double
     #works with fx_decon_demo.m needs more testing and maybe a refactoring
     if suggest:
@@ -136,6 +138,18 @@ def modify_find(nodes):
                     if var.name == lhs.name:
                         var.type = "uvec"
     return nodes
+
+def modify_struct(nodes):
+    for n in nodes:
+        if n.cls == "Assign":
+            lhs, rhs = n
+            if rhs.name == "struct":
+                index = 0
+                declares = n.func[0]
+                # TBD
+
+    return nodes
+
 
 
 # move the "using namespace arma ;" node last in the includes list

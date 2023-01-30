@@ -1634,7 +1634,10 @@ def Assign_repmat(node):
 def Get_struct(node):
     result = ""
     if node.parent.cls == 'Assign' and node[0].dim in [None, 0]:
-        result = node.parent[0].str
+        struct_name = node.parent[0].name
+        result = struct_name
+        insert_index = node.parent.children.index(node) + 1
+
         if len(node) % 2 != 0:
             node.error("Only the struct() variant where parameters are paired is supported")
             return ""
@@ -1642,7 +1645,8 @@ def Get_struct(node):
         for i in range(0,len(node),2):
             if node.children[i].cls == 'String':
                 variable = node.children[i].value
-                result += ";\n" + node.parent[0].str + "." + variable + " = " + "(%(" + str(i+1) + ")s)"
+
+                result += ";\n" + struct_name + "." + variable + " = " + "(%(" + str(i+1) + ")s)"
             else:
                 node.error("Only fields as strings are supported")
                 return ""
