@@ -129,7 +129,7 @@ def Declares(node):
 
         type = type_string(child)
         if child.is_global:
-            type += " &"
+            type += " (&"
 
         if type not in declares:
             declares[type] = []
@@ -154,6 +154,8 @@ def Declares(node):
 
             out += str(v)
             global_type = v.is_global
+            if global_type:
+                out += ")"
             if v.name in structs:
 
                 structs_ = node.program[3]
@@ -165,9 +167,9 @@ def Declares(node):
 
             out += ", "
             if global_type:
-                out += "&"
+                out += "(&"
 
-        out = out[:-2 if not global_type else -3] + " ;"
+        out = out[:-2 if not global_type else -4] + ";"
 
     return out[1:]
 
