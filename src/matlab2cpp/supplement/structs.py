@@ -27,8 +27,8 @@ def set(node, types):
                         var.type = types_[key]
 
                 else:
-                    var = collection.Declare(
-                        struct, key, backend="struct", type=types_[key])
+                    var = collection.Var(struct, name=key);
+                    var.type = types_[key]
 
 
 def get(node):
