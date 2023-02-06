@@ -6,6 +6,7 @@ from os.path import sep
 import matlab2cpp
 from . import m2cpp
 import matlab2cpp.pyplot
+from matlab2cpp.rules.function import type_string
 
 from . import reference
 
@@ -290,7 +291,7 @@ See also:
 
     name = node.cls + ":" + str(cur)
 
-    errors = node.program[5]
+    errors = node.program[6] # log
 
     if name in errors.names:
         return
@@ -373,6 +374,21 @@ Returns:
 def create_declare_global(node):
     out = create_declare(node)
     out.is_global = True
+    
+    if node.name in [p.name for p in node.program[5]]:
+        return out
+
+    # Globals
+    gvar = matlab2cpp.collection.Globals(node.program[5],
+                                         name=out.name,
+                                         value=node.value,
+                                         pointer=node.pointer)
+    gvar.file = out.file
+    gvar.line = out.line
+    gvar.cur = out.cur
+    gvar.code = out.code
+    gvar.func = out.func
+
     return out
 
 
@@ -484,11 +500,14 @@ See also:
 
     # translate for every program
     if node.cls == "Project":
+        print('>>>> ')
+        #print(node.globals)
         map(translate, node)
         return node
 
     if mid_translation[0] == 0:
-        log = node.program[5]
+        # logs
+        log = node.program[6]
         log.children = []
 
     mid_translation[0] += 1
@@ -560,7 +579,7 @@ See also:
         else:
             print(node.program.summary())
             raise KeyError(
-                    "Expected to find rule for '%s' in the file '_%s.py. Crash with file: %s, on line: %s'" %\
+                    "Expected to find rule for '%s' in the file '_%s.py'. Crash with file: %s, on line: %s'" %\
                             (node.cls, node.backend, node.file, node.line))
 
 

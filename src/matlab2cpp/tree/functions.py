@@ -75,6 +75,7 @@ def program(self, name):
     collection.Inlines(program, name=name)
     collection.Structs(program, name=name)
     collection.Headers(program, name=name)
+    collection.Globals(program, name=name)
     collection.Log(program, name=name)
 
     #includes.include("armadillo")

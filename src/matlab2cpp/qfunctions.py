@@ -163,7 +163,7 @@ See also:
     if not tree_.str:
         tree_.translate()
 
-    includes, funcs, inlines, structs, headers, log = tree_.program
+    includes, funcs, inlines, structs, headers, globals, log = tree_.program
 
     out = ""
 
@@ -174,6 +174,9 @@ See also:
 
         if structs.str:
             out += structs.str + "\n\n"
+
+        if len(globals) > 1:
+            out += "\n\n// Globals\n\n" + globals.str + "\n\n"
 
         if len(headers) > 1:
             out += headers.str + "\n\n"
@@ -274,7 +277,7 @@ See also:
     if not tree_.str:
         tree_.translate()
 
-    includes, funcs, inlines, structs, headers, log = tree_
+    includes, funcs, inlines, structs, headers, globals, log = tree_
 
     out = ""
 
@@ -292,6 +295,9 @@ See also:
 
     if structs.str:
         out += structs.str + "\n\n"
+
+    if len(globals) > 1:
+        out += "\n\n// Globals\n\n" + globals.str + "\n\n"
 
     if len(headers) > 1:
         out += headers.str + "\n\n"

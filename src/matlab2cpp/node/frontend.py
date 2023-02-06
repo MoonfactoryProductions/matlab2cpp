@@ -125,6 +125,7 @@ Attributes:
     project = ref.Project_reference()
     group = ref.Group_reference()
     declare = ref.Declare_reference()
+    globals = ref.Globals_reference()
     is_global = False
 
     ftypes = sup.Ftypes()

@@ -15,7 +15,7 @@ groups = [
     "While", "Block", "Node", "Transpose", "Ctranspose",
 ]
 
-nondeclares = ("Program", "Project", "Include", "Includes", "Struct", "Structs")
+nondeclares = ("Program", "Project", "Include", "Includes", "Struct", "Structs", "Globals")
 structvars = ("Fvar", "Fget", "Fset", "Nget", "Nset", "Sget", "Sset")
 
 class Property_reference(object):
@@ -151,6 +151,20 @@ class Project_reference(object):
 
         instance._project = project
         return project
+
+class Globals_reference(object):
+    def __get__(self, instance, owner):
+
+        if hasattr(instance, "_globals"):
+            return instance._globals
+
+        if instance.cls == "Globals":
+            globals = instance
+        else:
+            globals = instance.parent.globals
+
+        instance._globals = globals
+        return globals
 
 
 class Names(object):

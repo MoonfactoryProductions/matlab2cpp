@@ -124,9 +124,6 @@ def Declares(node):
 
     # fill declares and structs
     for child in node[:]:
-        if child.name.startswith('g_'): # 'g_' => global var. Don't declare
-            continue
-
         type = type_string(child)
         if child.is_global:
             type += " (&"

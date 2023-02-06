@@ -86,6 +86,21 @@ def Program(node):
 def Includes(node):
     return "", "\n", ""
 
+def Globals(node):
+    s = ""
+    for p in node.func.declare[0].children:
+        if node.name == p.name:
+            s += "extern " + type_string(p) + " " + p.name
+            if p.type == "structs":
+                structs_ = node.program[3]
+                struct = structs_[structs_.names.index(node.name)]
+                size = struct[struct.names.index("_size")].value
+                s += "[%s]" % size
+
+            s += ";"
+            break
+    return s, "\n", ""
+
 def Headers(node):
     return "", "\n", ""
 

@@ -96,6 +96,8 @@ A full summary of all nodes.
 +---------------------+--------------------+----------------+------------------------------+
 | Includes            |                    |                | Collection of includes       |
 +---------------------+--------------------+----------------+------------------------------+
+| Globals             |                    |                | Global variables             |
++---------------------+--------------------+----------------+------------------------------+
 | Int                 |                    | `1`            | Integer value                |
 +---------------------+--------------------+----------------+------------------------------+
 | Lambda              |                    | `f=@()1`       | Lambda function expression   |
@@ -198,7 +200,7 @@ __all__ = [
     "Declares", "Ecomment",
     "Elementdivision", "Elexp", "Elif", "Elmul", "Else", "End", "Eq", "Error",
     "Exp", "Expr", "Fget", "Float", "Parfor", "Pragma_for", "For", "Fset", "Func", "Funcs", "Fvar", "Ge",
-    "Get", "Gt", "Header", "Headers", "If", "Imag", "Include", "Includes", "Inline",
+    "Get", "Globals", "Gt", "Header", "Headers", "If", "Imag", "Include", "Includes", "Inline",
     "Inlines", "Int", "Lambda", "Land", "Lcomment", "Le", "Leftelementdivision",
     "Leftmatrixdivision", "Log", "Lor", "Lt", "Main", "Matrix", "Matrixdivision",
     "Minus", "Mul", "Ne", "Neg", "Nget", "Not", "Nset", "Opr", "Otherwise",
@@ -232,14 +234,19 @@ Represents one stand-alone script or program. Each child represents the various
 aspects of script/program.
 
 Children:
-    `Includes Funcs Inlines Structs Headers Log`
+    `Includes Funcs Inlines Structs Headers Globals Log`
 
 All keyword arguments are passed to `matlab2cpp.Node.__init__`.
     """
         self._program = self
+        self._globals = self 
         Node.__init__(self, parent, name=name, **kws)
 
 class Includes(Node):
+    def __init__(self, parent, **kws):
+        Node.__init__(self, parent, **kws)
+
+class Globals(Node):
     def __init__(self, parent, **kws):
         Node.__init__(self, parent, **kws)
 
