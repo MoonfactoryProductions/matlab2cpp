@@ -55,7 +55,7 @@ def SFget(node):
     for i in node.children[1:]:
         i.parent = node
 
-    return "/*SFget*/" + str(s)
+    return str(s)
 
 def SFset(node):
     name = "%(name)s[(%(0)s) - 1].%(value)s"
@@ -86,7 +86,7 @@ def SFset(node):
 
     node.type = tmp.type
 
-    return "/*SFset*/" + str(s)
+    return str(s)
 
 def Fset(node):
     return "%(name)s.%(value)s[", ", ", "-1]"

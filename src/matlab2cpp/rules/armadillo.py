@@ -130,7 +130,7 @@ convert scalar to various array types
     else:
         rhs = "%(1)s"
 
-    if lhs.cls == "Set":
+    if lhs.cls in ["Set", "SFset"]:
         return "%(0)s.fill(" + rhs + ") ;"
 
     #Earlier stuff, replaced with code right above
