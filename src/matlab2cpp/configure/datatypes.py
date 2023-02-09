@@ -152,6 +152,44 @@ def Fvar(node):
     if node.declare.type != "TYPE":
         node.type = node.declare.type
 
+def Fget(node):
+    # TODO: Factorize common code with SFget/SFset in _structs.py
+    name = "%(name)s.%(value)s"
+    # Interpolation
+    name = name % node.properties()
+
+    # Creating a temporary node in order to use the "Get" properties 
+    structs = node.program[3]
+    struct = structs[structs.names.index(node.name)]
+    t = struct[struct.names.index(node.value)]
+    # Set the type of the member 
+    node.declare.type = t.type
+
+    tmp = matlab2cpp.collection.Get(node,
+                                    name, 
+                                    cur=node.cur,
+                                    code=node.code)
+    # Set the tentative type
+    tmp.declare = t
+    for i in node.children[:-1]:
+        tmp.children.append(i)
+        i.parent = tmp
+
+    # resolve the type
+    frontend.loop(tmp, True)
+    frontend.loop(tmp, True)
+
+    tmp.translate(only=False)
+    s = tmp
+    node.children.pop();
+    # Reparenting
+    for i in node.children:
+        i.parent = node
+
+    # Set the returned type
+    node.type = tmp.type
+ 
+
 def SFget(node):
     # TODO: Factorize common code with SFget/SFset in _structs.py
     name = "%(name)s[(%(0)s) - 1].%(value)s"
@@ -180,7 +218,6 @@ def SFget(node):
     frontend.loop(tmp, True)
 
     tmp.translate(only=False)
-    s = tmp
     node.children.pop();
     # Reparenting
     for i in node.children[1:]:

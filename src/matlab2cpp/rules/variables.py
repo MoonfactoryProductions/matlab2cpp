@@ -87,12 +87,6 @@ def Cget(node):
     out = out + ")s)"
     return out
 
-def Fget(node):
-    node.pointer = 0
-    if len(node) == 1 and node[0].cls == "Int":
-        return "%(name)s[" + str(int(node[0].value)-1) + "].%(value)s"
-    return "%(name)s.%(value)s(", ", ", ")"
-
 def Sget(node):
     return "%(name)s[", ", ", "-1].%(value)s"
 

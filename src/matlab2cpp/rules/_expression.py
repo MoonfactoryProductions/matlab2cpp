@@ -593,19 +593,23 @@ def All(node):
     """All ':' element
     """
     arg = node.parent.name
+    extra = 0
     if node.parent.cls in ['Fget', 'Sget', 'Fset', 'Sset']:
         arg = node.parent.name + "." + node.parent.value
+    if node.parent.cls in ['SFget', 'SFset']:
+        arg = 'xxxx ' + str(node.parent)
+        extra = 1
 
     # is first arg
-    if len(node.parent) > 0 and node.parent[0] is node:
+    if len(node.parent) - extra > 0 and node.parent[extra] is node:
         arg += ".n_rows"
 
     # is second arg
-    elif len(node.parent) > 1 and node.parent[1] is node:
+    elif len(node.parent) - extra > 1 and node.parent[1 + extra] is node:
         arg += ".n_cols"
 
     # is third arg
-    elif len(node.parent) > 2 and node.parent[2] is node:
+    elif len(node.parent) - extra > 2 and node.parent[2 + extra] is node:
         arg += ".n_slices"
 
     else:
