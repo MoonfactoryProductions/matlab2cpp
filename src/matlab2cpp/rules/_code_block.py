@@ -229,6 +229,8 @@ Examples:
 }"""
 
 
+switch_struct_tmp_variable = True 
+
 def Switch(node):
     """
 Root of switch/case branch
@@ -261,7 +263,9 @@ Examples:
       d ;
     }
     """
-    if node[0].cls == "Var":
+    global switch_struct_tmp_variable
+
+    if node[0].cls in (["Var", "Sget", "SFget"] if not switch_struct_tmp_variable else ["Var"]):
         out = ""
 
     # create switch variable
@@ -302,6 +306,7 @@ Example:
       c ;
     }
     """
+    global switch_struct_tmp_variable
 
     # first in row
     if node is node.parent[1]:
@@ -312,6 +317,9 @@ Example:
     # define name
     if node.parent[0].cls == "Var":
         out = out + node.parent[0].name
+
+    elif node.parent[0].cls in ["Sget", "SFget"] and not switch_struct_tmp_variable:
+        out = out + str(node.parent[0])
 
     else:
         node.type = node.parent[0].type
