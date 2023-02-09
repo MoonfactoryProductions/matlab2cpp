@@ -111,10 +111,12 @@ Example:
 
 Cvar = "cell"
 Cget = "cell"
+SFget = "structs"
 Fget = "structs"
 Sget = "structs"
 Nget = "struct"
 Cset = "cell"
+SFset = "structs"
 Fset = "structs"
 Sset = "structs"
 Nset = "struct"

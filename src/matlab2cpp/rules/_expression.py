@@ -24,8 +24,8 @@ Examples:
     # find context for what end refers to
     pnode = node
     while pnode.parent.cls not in \
-            ("Get", "Cget", "Nget", "Fget", "Sget",
-            "Set", "Cset", "Nset", "Fset", "Sset", "Block"):
+            ("Get", "Cget", "Nget", "SFget", "Fget", "Sget",
+            "Set", "Cset", "Nset", "SFset", "Fset", "Sset", "Block"):
         pnode = pnode.parent
 
     # end statement only makes sense in certain contexts
@@ -34,9 +34,13 @@ Examples:
         return "end"
 
     index = pnode.parent.children.index(pnode)
-    name = pnode = pnode.parent.name
+    name = pnode.parent.name
+    nb_groups = len(node.group)
 
-    if len(node.group) == 1:
+    if pnode.parent.cls in ['Fget', 'Sget', 'Fset', 'Sset']:
+        name = pnode.parent.name + "." + pnode.parent.value
+
+    if nb_groups == 1:
         if node.group.dim == 1:
             return name + ".n_rows"
         if node.group.dim == 2:
@@ -589,6 +593,8 @@ def All(node):
     """All ':' element
     """
     arg = node.parent.name
+    if node.parent.cls in ['Fget', 'Sget', 'Fset', 'Sset']:
+        arg = node.parent.name + "." + node.parent.value
 
     # is first arg
     if len(node.parent) > 0 and node.parent[0] is node:
@@ -678,16 +684,16 @@ Examples:
     """
 
     # context: array argument (must always be uvec)
-    if node.group.cls in ("Get", "Cget", "Nget", "Fget", "Sget",
-                "Set", "Cset", "Nset", "Fset", "Sset") and node.parent.num:
+    if node.group.cls in ("Get", "Cget", "Nget", "SFget", "Fget", "Sget",
+                "Set", "Cset", "Nset", "SFset", "Fset", "Sset") and node.parent.num:
         #node.type = "uvec"
 
         node.include("m2cpp")
         # two arguments, use Armadillo span from:to
         if len(node) == 2:
 
-            if node.parent.cls in ("Get", "Cget", "Nget", "Fget", "Sget",
-                "Set", "Cset", "Nset", "Fset", "Sset") and node.parent.num and node.parent.backend != "reserved":
+            if node.parent.cls in ("Get", "Cget", "Nget", "SFget", "Fget", "Sget",
+                "Set", "Cset", "Nset", "SFset", "Fset", "Sset") and node.parent.num and node.parent.backend != "reserved":
                 if node.dim in (1, 2):
                     return "arma::span(%(0)s-1, %(1)s-1)"
 

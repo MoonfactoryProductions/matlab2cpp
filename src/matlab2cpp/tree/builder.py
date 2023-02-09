@@ -194,7 +194,7 @@ Example::
         for node in nodes[::-1]:
 
             if node.cls not in ("Var", "Fvar", "Cvar", "Set", "Cset", "Sset",
-                    "Fset", "Nset", "Get", "Cget", "Fget", "Nget", "Sget"):
+                    "SFset", "Fset", "Nset", "Get", "Cget", "SFget", "Fget", "Nget", "Sget"):
                 continue
 
             if node.name not in unassigned:
@@ -950,7 +950,7 @@ See also:
 Create left-hand-side variable (Expression)
 
 | Structure:
-|   Cget|Cvar|Fget|Fvar|Get|Nget|Var|Sget|Svar
+|   Cget|Cvar|SFget|Fget|Fvar|Get|Nget|Var|Sget|Svar
 |   | <list of expression>?
 
 Args:
@@ -971,7 +971,7 @@ See also:
 Create right-hand-side variable (Expression)
 
 | Structure:
-|   Cset|Cvar|Fset|Fvar|Nset|Var|Set|Sset|Svar
+|   Cset|Cvar|SFset|Fset|Fvar|Nset|Var|Set|Sset|Svar
 |   | <list of expression>?
 
 Args:

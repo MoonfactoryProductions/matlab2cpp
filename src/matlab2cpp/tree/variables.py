@@ -146,16 +146,39 @@ Example:
                 end += 1
             value = self.code[start:end]
 
-            if self.disp:
-                print("%4d     Sset        " % cur)
-                print("%-20s" % "variables.assign", end="")
-                print(repr(self.code[cur:end]))
+            if self.code[end] == '(':
+                j=end
+                end = findend.paren(self, j)
+                if self.disp:
+                    print("%4d     SFset       " % cur, end="")
+                    print("%-20s" % "variables.assign", end="")
+                    print(repr(self.code[cur:end+1]))
 
-            node = collection.Sset(parent, name, value, cur=cur,
+                node = collection.SFset(parent,
+                                       name,
+                                       value=value,
+                                       cur=cur,
+                                       code=self.code[cur:end+1],
+                                       pointer=1)
+
+                cur = self.create_list(node, k)
+                if len(node.children) != 1:
+                    self.syntaxerror(cur, "Invalid number of indices")
+                cur = self.create_list(node, j)
+                cur = end
+
+ 
+            else:
+                if self.disp:
+                    print("%4d     Sset        " % cur)
+                    print("%-20s" % "variables.assign", end="")
+                    print(repr(self.code[cur:end]))
+
+                node = collection.Sset(parent, name, value, cur=cur,
                     code=self.code[cur:end], pointer=1)
 
-            last = self.create_list(node, k)
-            cur = end-1
+                last = self.create_list(node, k)
+                cur = end-1
 
         else:
 
@@ -379,16 +402,39 @@ Example:
                 end += 1
             value = self.code[start:end]
 
-            if self.disp:
-                print("%4d     Sget        " % cur, end="")
-                print("%-20s" % "variables.variable", end="")
-                print(repr(self.code[cur:end]))
+            if self.code[end] == '(':
+                j=end
+                end = findend.paren(self, j)
+                if self.disp:
+                    print("%4d     SFget       " % cur, end="")
+                    print("%-20s" % "variables.assign", end="")
+                    print(repr(self.code[cur:end+1]))
 
-            node = collection.Sget(parent, name, value, cur=cur,
+                node = collection.SFget(parent,
+                                       name,
+                                       value=value,
+                                       cur=cur,
+                                       code=self.code[cur:end+1],
+                                       pointer=1)
+
+                cur = self.create_list(node, k)
+                if len(node.children) != 1:
+                    self.syntaxerror(cur, "Invalid number of indices")
+
+                cur = self.create_list(node, j)
+                cur = end
+
+            else:
+                if self.disp:
+                    print("%4d     Sget        " % cur, end="")
+                    print("%-20s" % "variables.variable", end="")
+                    print(repr(self.code[cur:end]))
+
+                node = collection.Sget(parent, name, value, cur=cur,
                     code=self.code[cur:end], pointer=1)
 
-            last = self.create_list(node, k)
-            cur = end
+                last = self.create_list(node, k)
+                cur = end
 
         else:
 
@@ -452,14 +498,13 @@ Example:
                     print(repr(self.code[cur:end+1]))
 
 
-                node = collection.Fget(parent, name, cur=cur,
-                        value=value, code=self.code[cur:end+1])
+                node = collection.Fget(parent,
+                                       name,
+                                       cur=cur,
+                                       value=value,
+                                       code=self.code[cur:end+1])
 
-                j += 1
-                while self.code[j] in " \t":
-                    j += 1
-
-                cur = self.create_expression(node, j)
+                cur = self.create_list(node, j)
 
                 node.create_declare()
 

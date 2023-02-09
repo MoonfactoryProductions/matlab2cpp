@@ -379,8 +379,8 @@ def Get_zeros(node):
     #        node.mem = 4
 
     # reset to uword if arg of array-node
-    if (castedMem is None) and node.group.cls in ("Get", "Cget", "Fget", "Nget", "Sget", "Set", "Cset",
-            "Fset", "Nset", "Sset") and node.group.num:
+    if (castedMem is None) and node.group.cls in ("Get", "Cget", "SFget", "Fget", "Nget", "Sget", "Set", "Cset",
+            "SFset", "Fset", "Nset", "Sset") and node.group.num:
         node.mem = 0
         if numDims == 2 and node[0].cls == "Int" and node[0].value == "1":
             node.dim = 1

@@ -44,7 +44,7 @@ def Vector(node):
     #Join columns: a = [0, my_rowvec, b]
     for i in range(len(nodes)):
         # scalars must be converted first
-        if node[i].value or node[i].dim == 0: # value=scalarsonly
+        if (node[i].value and node[i].cls not in ['Sget', 'SFget', 'Sset', 'SFset']) or node[i].dim == 0: # value=scalarsonly
             node[i].include("m2cpp")
             if mem != -1:
                 nodes[i] = "m2cpp::srow<" + mem_type[mem] + ">(" + nodes[i] + ")"
@@ -52,9 +52,13 @@ def Vector(node):
                 nodes[i] = "m2cpp::srow(" + nodes[i] + ")"
 
     if nodes:
-        out = str(nodes[0])
+        # s = "/* " + node[0].cls + " " + node[0].value + " " + str(node[0].dim) + "*/"
+        s = ""
+        out = s + str(nodes[0])
         for node_ in nodes[1:]:
-            out = "arma::join_rows(%s, %s)" % (out, node_)
+            # s = "/* " + node[i].cls + " " + node[i].value + " " + str(node[i].dim) + "*/"
+            s = ""
+            out = s + "arma::join_rows(%s, %s)" % (out, node_)
         return out
     return ""
 

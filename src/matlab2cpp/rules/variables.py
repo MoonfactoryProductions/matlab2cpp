@@ -1,4 +1,5 @@
 #import matlab2cpp
+
 def Var(node):
     if node.type == "TYPE":
         node.error("unknown data type")

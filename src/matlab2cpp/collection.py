@@ -199,7 +199,7 @@ __all__ = [
     "Counter", "Cset", "Ctranspose", "Cvar", 
     "Declares", "Ecomment",
     "Elementdivision", "Elexp", "Elif", "Elmul", "Else", "End", "Eq", "Error",
-    "Exp", "Expr", "Fget", "Float", "Parfor", "Pragma_for", "For", "Fset", "Func", "Funcs", "Fvar", "Ge",
+    "Exp", "Expr", "SFget", "Fget", "Float", "Parfor", "Pragma_for", "For", "SFset", "Fset", "Func", "Funcs", "Fvar", "Ge",
     "Get", "Globals", "Gt", "Header", "Headers", "If", "Imag", "Include", "Includes", "Inline",
     "Inlines", "Int", "Lambda", "Land", "Lcomment", "Le", "Leftelementdivision",
     "Leftmatrixdivision", "Log", "Lor", "Lt", "Main", "Matrix", "Matrixdivision",
@@ -419,6 +419,7 @@ class Ecomment(Node):
 class Var(Node):
     def __init__(self, parent, name, **kws):
         Node.__init__(self, parent, name=name, **kws)
+
 class Get(Var):         pass
 class Set(Var):         pass
 
@@ -433,6 +434,10 @@ class Cvar(Node):
 class Cget(Node):
     def __init__(self, parent, name, **kws):
         Node.__init__(self, parent, name=name, **kws)
+
+class SFget(Node):
+    def __init__(self, parent, name, value, **kws):
+        Node.__init__(self, parent, name=name, value=value, **kws)
 
 class Fget(Node):
     def __init__(self, parent, name, value, **kws):
@@ -449,6 +454,10 @@ class Nget(Node):
 class Cset(Node):
     def __init__(self, parent, name, **kws):
         Node.__init__(self, parent, name=name, **kws)
+
+class SFset(Node):
+    def __init__(self, parent, name, value, **kws):
+        Node.__init__(self, parent, name=name, value=value, **kws)
 
 class Fset(Node):
     def __init__(self, parent, name, value, **kws):

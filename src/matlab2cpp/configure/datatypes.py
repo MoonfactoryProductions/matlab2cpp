@@ -1,6 +1,7 @@
 
 from .funcs import funcs
 from . import armadillo, backends, frontend
+import matlab2cpp
 
 Counter = "structs"
 
@@ -146,6 +147,51 @@ def Set(node):
 def Fvar(node):
 
     if node.parent.cls == "Assign" and node.parent[0] is node:
+        node.declare.suggest = node.parent[1].type
+
+    if node.declare.type != "TYPE":
+        node.type = node.declare.type
+
+def SFget(node):
+    # TODO: Factorize common code with SFget/SFset in _structs.py
+    name = "%(name)s[(%(0)s) - 1].%(value)s"
+    # Interpolation
+    name = name % node.properties()
+
+    # Creating a temporary node in order to use the "Get" properties 
+    structs = node.program[3]
+    struct = structs[structs.names.index(node.name)]
+    t = struct[struct.names.index(node.value)]
+    # Set the type of the member 
+    node.declare.type = t.type
+
+    tmp = matlab2cpp.collection.Get(node,
+                                    name, 
+                                    cur=node.cur,
+                                    code=node.code)
+    # Set the tentative type
+    tmp.declare = t
+    for i in node.children[1:-1]:
+        tmp.children.append(i)
+        i.parent = tmp
+
+    # resolve the type
+    frontend.loop(tmp, True)
+    frontend.loop(tmp, True)
+
+    tmp.translate(only=False)
+    s = tmp
+    node.children.pop();
+    # Reparenting
+    for i in node.children[1:]:
+        i.parent = node
+
+    # Set the returned type
+    node.type = tmp.type
+
+
+def SFset(node):
+    if node.parent.cls == "Assign":
         node.declare.suggest = node.parent[1].type
 
     if node.declare.type != "TYPE":
@@ -356,8 +402,8 @@ All = "uvec"
 
 def Colon(node):
     # context: array argument (must always be uvec)
-    if node.group.cls in ("Get", "Cget", "Nget", "Fget", "Sget",
-                "Set", "Cset", "Nset", "Fset", "Sset") and \
+    if node.group.cls in ("Get", "Cget", "Nget", "SFget", "Fget", "Sget",
+                "Set", "Cset", "Nset", "FSset", "Fset", "Sset") and \
                 node.parent.backend not in ("func_return", "func_returns", "reserved", "func_lambda"):
         node.type = "uvec"
 
@@ -368,8 +414,8 @@ def Colon(node):
             node.type = "rowvec"
 
         # context: pass to function
-        elif node.parent.cls in ("Get", "Cget", "Nget", "Fget", "Sget",
-                "Set", "Cset", "Nset", "Fset", "Sset"):
+        elif node.parent.cls in ("Get", "Cget", "Nget", "SFget", "Fget", "Sget",
+                "Set", "Cset", "Nset", "Fset", "Fset", "Sset"):
             node.type = "rowvec"
 
         # context: assignment
@@ -404,7 +450,7 @@ def Lambda(node):
 
         # a variable
         if node_.cls in ["Var", "Cvar", "Fvar",
-                "Get", "Cget", "Fget", "Nget"]:
+                "Get", "Cget", "SFget", "Fget", "Nget"]:
             name = node_.name
 
             # not in lambda scope

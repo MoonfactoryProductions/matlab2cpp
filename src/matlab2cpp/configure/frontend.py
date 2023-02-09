@@ -75,7 +75,5 @@ def loop(root, suggest):
 
     # delete log, if any (create on translate)
     for program in root.project:
-        for p in program.children:
-            print(p.cls + " " + str(len(p.children)))
         # TODO: Do not use hardcoded indices
         program[-1].children = []

@@ -268,7 +268,7 @@ Examples:
     else:
         node.type = node[0].type
         out = "%(type)s _var_%(type)s = %(0)s ;\n"
-    return out + "\n".join(map(str, node[1:]))
+    return "/* " + node[0].type + "*/ " + out + "\n".join(map(str, node[1:]))
 
 def Case(node):
     """

@@ -14,7 +14,6 @@ def Matrix(node):
     return "", ", ", ""
 
 def Get(node):
-
     if len(node) == 2:
         arg0, dim0 = arma.configure_arg(node[0], 0)
         arg1, dim1 = arma.configure_arg(node[1], 1)

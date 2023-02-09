@@ -9,14 +9,14 @@ Note that, if a reference does not exist, the node itself will be returned.
 
 groups = [
     "Assign", "Assigns", "Branch", "For", "Func", "Main",
-    "Set", "Cset", "Fset", "Nset", "Sset",
-    "Get", "Cget", "Fget", "Nget", "Sget",
+    "Set", "Cset", "SFset", "Fset", "Nset", "Sset",
+    "Get", "Cget", "SFget", "Fget", "Nget", "Sget",
     "Statement", "Switch", "Tryblock", "Matrix",
     "While", "Block", "Node", "Transpose", "Ctranspose",
 ]
 
 nondeclares = ("Program", "Project", "Include", "Includes", "Struct", "Structs", "Globals")
-structvars = ("Fvar", "Fget", "Fset", "Nget", "Nset", "Sget", "Sset")
+structvars = ("Fvar", "SFget", "Fget", "SFset", "Fset", "Nget", "Nset", "Sget", "Sset")
 
 class Property_reference(object):
     "general property node"
