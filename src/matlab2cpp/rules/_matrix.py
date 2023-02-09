@@ -108,7 +108,7 @@ def Matrix(node):
             pass #do = do and node.parent.name in [ "transpose" ]
         
         if do:
-            if node.parent.cls in ("Get", "Set") and node.mem != 0:
+            if node.parent.cls in ("Get", "Set", "SFget", "SFset") and node.mem != 0:
                 if node.parent.type == "TYPE":
                     node.type = (node.dim, 3)
                 else:
