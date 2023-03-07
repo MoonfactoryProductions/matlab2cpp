@@ -46,6 +46,7 @@ reserved = {
     "mat2str",
     "isnan",
     "struct",
+    "dbstop",
 }
 
 # Common attribute
@@ -1660,6 +1661,14 @@ def Get_struct(node):
         result += ")"
  
     return result 
+
+def Get_dbstop(node):
+    if len(node) == 0:
+        node.include("m2cpp")
+        return "M2CPP_BREAKPOINT()"
+    else:
+        node.error("dbstop does not accept arguments")
+        return ""
 
 
 

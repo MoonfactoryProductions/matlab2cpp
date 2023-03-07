@@ -7,6 +7,25 @@ using namespace arma;
 
 #define M2CPP_PERCENT   %
 
+
+// In-code breakpoint macro, disabled by default 
+#define M2CPP_BREAKPOINT()
+
+#if defined(__DBSTOP__)
+#	undef M2CPP_BREAKPOINT
+#	if defined(_WIN32)
+#       #define M2CPP_BREAKPOINT() \
+    __debugbreak()
+#	elif defined(__wasm__)
+#       define M2CPP_BREAKPOINT() \
+    emscripten_run_script("debugger;")
+#	else
+#       define M2CPP_BREAKPOINT()   \
+        __builtin_debugtrap() 
+#	endif
+#endif // __DBSTOP__
+
+
 namespace m2cpp {
 
     template<typename eT>
