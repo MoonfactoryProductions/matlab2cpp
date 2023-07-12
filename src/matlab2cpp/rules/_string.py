@@ -7,5 +7,5 @@ def String(node):
     if node.name or node.parent.backend != "matrix":
         return '"%(value)s"'
     else:
-        return 'std::string("%(value)s")'
+        return '' + node.project.builder.namespace + '::string("%(value)s")'
         

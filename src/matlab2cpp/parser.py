@@ -110,5 +110,9 @@ def create_parser():
         "-n", '--nargin', action="store_true", help=(
             "Don't remove if and switch branches which use nargin variable."),
     )
+    parser.add_argument(
+        '--namespace', type=str, dest="namespace", default="std", help=(
+            "The namespace to use (instead of std)."),
+    )
 
     return parser

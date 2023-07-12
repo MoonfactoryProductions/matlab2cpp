@@ -24,6 +24,7 @@ Args:
         enable_omp=args.enable_omp,
         enable_tbb=args.enable_tbb,
         reference=args.reference,
+        namespace=args.namespace,
     )
 
     paths_from_file = []

@@ -69,7 +69,7 @@ Returns:
         return "_" + declare.name.capitalize()
 
     elif node.type == "string":
-        return "std::string"
+        return node.project.builder.namespace + "::string"
 
     return node.type
 

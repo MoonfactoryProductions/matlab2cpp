@@ -107,6 +107,8 @@ def Headers(node):
 
 def Header(node):
     func = node.program[1][node.program[1].names.index(node.name)]
+    ftypes = node.program.ftypes
+
     if func.backend == "func_return":
 
         # Get the result type
@@ -228,7 +230,7 @@ def Struct(node):
         declares[type].append(child)
 
     for typ, fields in declares.items():
-        if typ == 'string': typ = 'std::string'
+        if typ == 'string': typ = node.project.builder.namespace + '::string'
         
         for field in fields:
             out += "\n" + typ + " " + str(field) + " ;"

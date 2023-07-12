@@ -715,7 +715,7 @@ See also:
                 #if mconvert.h not found in directory, create the file
                 if not os.path.isfile(output_file_path) or "mconvert.h" not in created_file:
                     f = open(output_file_path, "w")
-                    f.write(m2cpp.code)
+                    f.write(m2cpp.code(node.project.builder.namespace))
                     f.close()
                     created_file.append("mconvert.h")
             except:

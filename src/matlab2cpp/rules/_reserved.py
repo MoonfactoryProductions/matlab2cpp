@@ -1084,7 +1084,7 @@ def Get_toc(node):
         return "m2cpp::toc(" + arg + ")"
 
     node.include("iostream")
-    return 'std::cout << "Elapsed time = " << m2cpp::toc(' + arg + ') << std::endl'
+    return node.project.builder.namespace + '::cout << "Elapsed time = " << m2cpp::toc(' + arg + ') << std::endl'
 
 def Get_diag(node):
     if node.dim == 3:
@@ -1106,12 +1106,12 @@ def Get_disp(node):
     if len(node) == 1:
         arg = node[0]
         if not arg.num or arg.dim == 0:
-            return "std::cout << %(0)s << std::endl"
+            return node.project.builder.namespace + "::cout << %(0)s << std::endl"
         else:
             return "%(0)s.print()"
     else:
         node.error("disp should take one argument")
-    return "std::cout << ", "<< ", " << std::endl"
+    return node.project.builder.namespace  + "::cout << ", "<< ", " << std::endl"
 
 def Get_fprintf(node):
     """ Matlab's fprintf can write to file and screen... this is translated to printf (so only printing to screen)
@@ -1582,7 +1582,7 @@ def Get_std(node):
 
 def Get_strcat(node):
     if len(node) == 2:
-        return "(std::string(%(0)s) + std::string(%(1)s))"
+        return "(" + node.project.builder.namespace + "::string(%(0)s) + " + node.project.builder.namespace + "::string(%(1)s))"
     node.error("strcat: not enough arguments")
     return ""
 
