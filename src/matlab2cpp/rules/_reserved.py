@@ -1084,7 +1084,7 @@ def Get_toc(node):
         return "m2cpp::toc(" + arg + ")"
 
     node.include("iostream")
-    return node.project.builder.namespace + '::cout << "Elapsed time = " << m2cpp::toc(' + arg + ') << std::endl'
+    return node.project.builder.namespace + '::cout << "Elapsed time = " << m2cpp::toc(' + arg + ') << ' + node.project.builder.namespace + '::endl'
 
 def Get_diag(node):
     if node.dim == 3:
@@ -1106,25 +1106,25 @@ def Get_disp(node):
     if len(node) == 1:
         arg = node[0]
         if not arg.num or arg.dim == 0:
-            return node.project.builder.namespace + "::cout << %(0)s << std::endl"
+            return node.project.builder.namespace + "::cout << %(0)s << " + node.project.builder.namespace + "::endl"
         else:
             return "%(0)s.print()"
     else:
         node.error("disp should take one argument")
-    return node.project.builder.namespace  + "::cout << ", "<< ", " << std::endl"
+    return node.project.builder.namespace  + "::cout << ", "<< ", " << " + node.project.builder.namespace + "::endl"
 
 def Get_fprintf(node):
     """ Matlab's fprintf can write to file and screen... this is translated to printf (so only printing to screen)
     will give error if trying to write to file.
     """
     node.include("cstdio")
-    return "std::printf(", ", ", ")"
+    return node.project.builder.namespace + "::printf(", ", ", ")"
 
 
 def Get_error(node):
     node.include("iostream")
 
-    return "std::cerr << ", "<< ", " << std::endl"
+    return node.project.builder.namespace + "::cerr << ", "<< ", " << " + node.project.builder.namespace + "::endl"
 
 def Get_convmtx(node):
     node.include("m2cpp")

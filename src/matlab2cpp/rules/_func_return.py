@@ -160,7 +160,10 @@ def Declares(node):
                 size = struct[struct.names.index("_size")].value
                 out += "[%s]" % size
             if global_type:
-                out += "(::" + str(v) + ")"
+                if node.project.builder.cpp_class != "":
+                    out += "(this->" + str(v) + ")"
+                else:
+                    out += "(::" + str(v) + ")"
 
             out += ", "
             if global_type:
@@ -197,20 +200,29 @@ def Func(node):
 
     # empty code_block function with return statement
     if len(node[-1]) == 0:
-        return rettype + """ %(name)s(%(2)s)
+        intro = rettype + """ %(name)s(%(2)s)""" 
+        if node.project.builder.cpp_class != "":
+            intro = "inline " + rettype + " " + node.project.builder.cpp_class + """::%(name)s(%(2)s)""" 
+        return intro + """
 {
 return %(1)s
 }"""
 
     # function ends with a return statement
     if node[-1][-1] and node[-1][-1][-1].cls == "Return":
-        return rettype + """ %(name)s(%(2)s)
+        intro = rettype + """ %(name)s(%(2)s)""" 
+        if node.project.builder.cpp_class != "":
+            intro = "inline " + rettype + " " + node.project.builder.cpp_class + """::%(name)s(%(2)s)""" 
+        return intro + """
 {
 %(0)s
 %(3)s
 }"""
 
-    return rettype + """ %(name)s(%(2)s)
+    intro = rettype + """ %(name)s(%(2)s)""" 
+    if node.project.builder.cpp_class != "":
+        intro = "inline " + rettype + " " + node.project.builder.cpp_class + """::%(name)s(%(2)s)""" 
+    return intro + """
 {
 %(0)s
 %(3)s

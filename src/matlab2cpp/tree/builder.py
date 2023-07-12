@@ -50,7 +50,7 @@ code through the front end functions in :py:mod:`matlab2cpp.qfunctions`::
     """
 
     def __init__(self, disp=False, comments=True, original=False, enable_omp=False, enable_tbb=False,
-                 reference=False, namespace="std", **kws):
+                 reference=False, namespace="std", cpp_class = "",  **kws):
         """
 Args:
     disp (bool):
@@ -72,6 +72,7 @@ Args:
         self.reference = reference
         self.configured = False
         self.namespace = namespace
+        self.cpp_class = cpp_class.strip()
 
 
     def __getitem__(self, index):

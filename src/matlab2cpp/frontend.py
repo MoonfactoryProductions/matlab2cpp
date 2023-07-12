@@ -25,6 +25,7 @@ Args:
         enable_tbb=args.enable_tbb,
         reference=args.reference,
         namespace=args.namespace,
+        cpp_class=args.cpp_class,
     )
 
     paths_from_file = []

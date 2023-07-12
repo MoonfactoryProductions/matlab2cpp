@@ -23,24 +23,36 @@ Examples:
 
     if len(node[1]) and len(node[2]):
         if len(node[0])>len(node[1]):
-            return """void %(name)s(%(2)s, %(1)s)
+            intro = """void %(name)s(%(2)s, %(1)s)"""
+            if node.project.builder.cpp_class != "":
+                intro = """inline void """ + node.project.builder.cpp_class + """::%(name)s(%(2)s, %(1)s)""" 
+            return intro + """
 {
 %(0)s
 %(3)s
 }"""
-        return """void %(name)s(%(2)s, %(1)s)
+        intro = """void %(name)s(%(2)s, %(1)s)"""
+        if node.project.builder.cpp_class != "":
+            intro = """inline void """ + node.project.builder.cpp_class + """::%(name)s(%(2)s, %(1)s)""" 
+        return intro + """
 {
 %(3)s
 }"""
 
     # one of returns or params are missing
     if len(node[0])>len(node[1]):
-        return """void %(name)s(%(2)s%(1)s)
+        intro = """void %(name)s(%(2)s%(1)s)"""
+        if node.project.builder.cpp_class != "":
+            intro = """inline void """ + node.project.builder.cpp_class + """::%(name)s(%(2)s%(1)s)""" 
+        return intro + """
 {
 %(0)s
 %(3)s
 }"""
-    return """void %(name)s(%(2)s%(1)s)
+    intro = """void %(name)s(%(2)s%(1)s)"""
+    if node.project.builder.cpp_class != "":
+        intro = """inline void """ + node.project.builder.cpp_class + """::%(name)s(%(2)s%(1)s)""" 
+    return intro + """
 {
 %(3)s
 }"""
@@ -243,7 +255,10 @@ Examples:
                 size = struct[struct.names.index("_size")].value
                 out += "[%s]" % size
             if global_type:
-                out += "(::" + str(v) + ")"
+                if node.project.builder.cpp_class != "":
+                    out += "(this->" + str(v) + ")"
+                else:
+                    out += "(::" + str(v) + ")"
 
             out += ", "
             if global_type:

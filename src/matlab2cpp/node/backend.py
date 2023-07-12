@@ -500,7 +500,6 @@ See also:
 
     # translate for every program
     if node.cls == "Project":
-        print('>>>> ')
         #print(node.globals)
         map(translate, node)
         return node
@@ -695,7 +694,7 @@ See also:
                 #if mconvert.h not found in directory, create the file
                 if not os.path.isfile(output_file_path) or "SPlot.h" not in created_file:
                     f = open(output_file_path, "w")
-                    f.write(matlab2cpp.pyplot.code)
+                    f.write(matlab2cpp.pyplot.code(node.project.builder.namespace))
                     f.close()
                     created_file.append("SPlot.h")
             except:

@@ -159,6 +159,7 @@ See also:
             tree_ = tree_[0]
 
     tree_ = tree_.program
+    cpp_class = tree_.project.builder.cpp_class
 
     if not tree_.str:
         tree_.translate()
@@ -273,6 +274,7 @@ See also:
             tree_ = tree_[0]
 
     tree_ = tree_.program
+    cpp_class = tree_.project.builder.cpp_class
 
     if not tree_.str:
         tree_.translate()
@@ -293,14 +295,22 @@ See also:
     if includes.str:
         out += includes.str + "\n\n"
 
+    if cpp_class != "":
+        out += "class " + cpp_class + "\n{\npublic:\n\n"
+ 
+    class_body = ""
     if structs.str:
-        out += structs.str + "\n\n"
+        class_body += structs.str + "\n\n"
 
     if len(globals) > 1:
-        out += "\n\n// Globals\n\n" + globals.str + "\n\n"
+        class_body += "\n\n// Globals\n\n" + globals.str + "\n\n"
 
     if len(headers) > 1:
-        out += headers.str + "\n\n"
+        class_body += headers.str + "\n\n"
+
+    out += class_body;
+    if cpp_class != "":
+        out += "};\n\n"
 
     if funcs.str:
         out += funcs.str + "\n\n"

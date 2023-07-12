@@ -114,5 +114,9 @@ def create_parser():
         '--namespace', type=str, dest="namespace", default="std", help=(
             "The namespace to use (instead of std)."),
     )
+    parser.add_argument(
+        '--cpp_class', type=str, dest="cpp_class", default="", help=(
+            "If set, all the matlab code is embedded in a class whose name is given in argument."),
+    )
 
     return parser

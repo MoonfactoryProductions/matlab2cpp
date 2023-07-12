@@ -87,10 +87,14 @@ def Includes(node):
     return "", "\n", ""
 
 def Globals(node):
+    prefix = "extern "
+    if node.project.builder.cpp_class != "":
+        prefix = ""
+
     s = ""
     for p in node.func.declare[0].children:
         if node.name == p.name:
-            s += "extern " + type_string(p) + " " + p.name
+            s += prefix + type_string(p) + " " + p.name
             if p.type == "structs":
                 structs_ = node.program[3]
                 struct = structs_[structs_.names.index(node.name)]

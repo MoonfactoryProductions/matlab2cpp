@@ -1,4 +1,5 @@
-code = r"""
+def code(namespace):
+    result = r"""
 /*
  * SPlot.h
  *
@@ -36,10 +37,10 @@ class PyEngine
 	class arma_vec
 	{
 	public:
-		const std::vector<T> v;
+		const """ + namespace + r"""::vector<T> v;
 		arma_vec() : v() {}
 		arma_vec(const std::initializer_list<T> &c) : v(c) {}
-		arma_vec(const std::vector<T> &vec) : v(vec) {}
+		arma_vec(const """ + namespace + r"""::vector<T> &vec) : v(vec) {}
 		arma_vec(const arma::Col<T> &vec) : v(vec.begin(), vec.end()) {}
 		arma_vec(const arma::Row<T> &vec) : v(vec.begin(), vec.end()) {}
 		arma_vec(const arma::subview_col<T> &vec) : arma_vec(arma::Col<T>{vec}) {}
@@ -73,7 +74,7 @@ class PyEngine
 		template <class NPY_T, class InputIt>
 		static PyObject *create(const std::initializer_list<size_t> &in_dims, const InputIt &data, int flags=0)
 		{
-			std::vector<npy_intp> dims;
+			""" + namespace + r"""::vector<npy_intp> dims;
 			for (auto it=in_dims.begin(); it!=in_dims.end(); ++it)
 				dims.push_back((npy_intp)*it);
 			PyObject *obj = PyArray_NewFromDescr(&PyArray_Type, PyArray_DescrFromType(npy_typenum<NPY_T>()),
@@ -107,37 +108,37 @@ class PyEngine
 		py_obj(int const& i) : obj(PyInt_FromLong(i)) {}
 		py_obj(double const& d) : obj(PyFloat_FromDouble(d)) {}
 		py_obj(const char* const& s) : obj(PyString_FromString(s)) {}
-		py_obj(std::string const& s) : obj(PyString_FromString(s.c_str())) {}
+		py_obj(""" + namespace + r"""::string const& s) : obj(PyString_FromString(s.c_str())) {}
 
 		/* Construct from various sequences of double/float/int type */
 
 	    py_obj(std::initializer_list<double> c) : obj(create<double>({c.size()}, c.begin())) {}
-	    py_obj(std::vector<double> const& vec) : obj(create<double>({vec.size()}, vec.begin())) {}
+	    py_obj(""" + namespace + r"""::vector<double> const& vec) : obj(create<double>({vec.size()}, vec.begin())) {}
 		py_obj(arma_vec<double> const& vec) : py_obj(vec.v) {}
 	    py_obj(arma_mat<double> const& mat) : obj(create<double>({mat.m.n_rows, mat.m.n_cols}, mat.m.begin(), NPY_ARRAY_F_CONTIGUOUS)) {}
 
 	    py_obj(std::initializer_list<float> c) : obj(create<float>({c.size()}, c.begin())) {}
-	    py_obj(std::vector<float> const& vec) : obj(create<float>({vec.size()}, vec.begin())) {}
+	    py_obj(""" + namespace + r"""::vector<float> const& vec) : obj(create<float>({vec.size()}, vec.begin())) {}
 		py_obj(arma_vec<float> const& vec) : py_obj(vec.v) {}
 		py_obj(arma_mat<float> const& mat) : obj(create<float>({mat.m.n_rows, mat.m.n_cols}, mat.m.begin(), NPY_ARRAY_F_CONTIGUOUS)) {}
 
 	    py_obj(std::initializer_list<arma::cx_double> c) : obj(create<arma::cx_double>({c.size()}, c.begin())) {}
-	    py_obj(std::vector<arma::cx_double> const& vec) : obj(create<arma::cx_double>({vec.size()}, vec.begin())) {}
+	    py_obj(""" + namespace + r"""::vector<arma::cx_double> const& vec) : obj(create<arma::cx_double>({vec.size()}, vec.begin())) {}
 		py_obj(arma_vec<arma::cx_double> const& vec) : py_obj(vec.v) {}
 		py_obj(arma_mat<arma::cx_double> const& mat) : obj(create<arma::cx_double>({mat.m.n_rows, mat.m.n_cols}, mat.m.begin(), NPY_ARRAY_F_CONTIGUOUS)) {}
 
 	    py_obj(std::initializer_list<arma::cx_float> c) : obj(create<arma::cx_float>({c.size()}, c.begin())) {}
-	    py_obj(std::vector<arma::cx_float> const& vec) : obj(create<arma::cx_float>({vec.size()}, vec.begin())) {}
+	    py_obj(""" + namespace + r"""::vector<arma::cx_float> const& vec) : obj(create<arma::cx_float>({vec.size()}, vec.begin())) {}
 		py_obj(arma_vec<arma::cx_float> const& vec) : py_obj(vec.v) {}
 		py_obj(arma_mat<arma::cx_float> const& mat) : obj(create<arma::cx_float>({mat.m.n_rows, mat.m.n_cols}, mat.m.begin(), NPY_ARRAY_F_CONTIGUOUS)) {}
 
 	    py_obj(std::initializer_list<arma::sword> c) : obj(create<arma::sword>({c.size()}, c.begin())) {}
-	    py_obj(std::vector<arma::sword> const& vec) : obj(create<arma::sword>({vec.size()}, vec.begin())) {}
+	    py_obj(""" + namespace + r"""::vector<arma::sword> const& vec) : obj(create<arma::sword>({vec.size()}, vec.begin())) {}
 		py_obj(arma_vec<arma::sword> const& vec) : py_obj(vec.v) {}
 		py_obj(arma_mat<arma::sword> const& mat) : obj(create<arma::sword>({mat.m.n_rows, mat.m.n_cols}, mat.m.begin(), NPY_ARRAY_F_CONTIGUOUS)) {}
 
 	    py_obj(std::initializer_list<arma::uword> c) : obj(create<arma::uword>({c.size()}, c.begin())) {}
-	    py_obj(std::vector<arma::uword> const& vec) : obj(create<arma::uword>({vec.size()}, vec.begin())) {}
+	    py_obj(""" + namespace + r"""::vector<arma::uword> const& vec) : obj(create<arma::uword>({vec.size()}, vec.begin())) {}
 		py_obj(arma_vec<arma::uword> const& vec) : py_obj(vec.v) {}
 		py_obj(arma_mat<arma::uword> const& mat) : obj(create<arma::uword>({mat.m.n_rows, mat.m.n_cols}, mat.m.begin(), NPY_ARRAY_F_CONTIGUOUS)) {}
 
@@ -183,8 +184,8 @@ class PyEngine
 		return py_obj(Py_None, false);
 	}
 
-	typedef std::vector<py_obj> args_t;
-	typedef std::map<const char*, py_obj> kwargs_t;
+	typedef """ + namespace + r"""::vector<py_obj> args_t;
+	typedef """ + namespace + r"""::map<const char*, py_obj> kwargs_t;
 
  protected:
 
@@ -194,7 +195,7 @@ class PyEngine
 	{
 		py_obj pyFunc(PyObject_GetAttrString(object, func), true);
 		if (!pyFunc.valid()) {
-			std::cerr << "No such method: " << func << std::endl;
+			""" + namespace + r"""::cerr << "No such method: " << func << """ + namespace + r"""::endl;
 			return py_obj(nullptr, true);
 		}
 
@@ -223,7 +224,7 @@ class PyEngine
 
 	py_obj error(const char *msg)
 	{
-		std::cerr << msg << std::endl;
+		""" + namespace + r"""::cerr << msg << """ + namespace + r"""::endl;
 		return py_obj(nullptr, false);
 	}
 
@@ -246,7 +247,7 @@ class PyEngine
 		}
 		if (PyRun_SimpleString(str) != 0)
 		{
-			std::cerr << "Error from Python interpreter:" << std::endl;
+			""" + namespace + r"""::cerr << "Error from Python interpreter:" << """ + namespace + r"""::endl;
 			PyErr_Print();
 			return false;
 		}
@@ -277,7 +278,7 @@ class SPlot : public PyEngine
 	SPlot()
 		: PyEngine()
 	{
-		std::string splot_py;
+		""" + namespace + r"""::string splot_py;
 		std::ifstream in("splot.py");
 		if (in.fail())
 		{
@@ -493,7 +494,7 @@ else:
     table.seq = 0
 )";
 		} else {
-			splot_py = static_cast<std::stringstream&>(std::stringstream() << in.rdbuf()).str();
+			splot_py = static_cast<""" + namespace + r"""::stringstream&>(""" + namespace + r"""::stringstream() << in.rdbuf()).str();
 		}
 		py_code(splot_py.c_str());
 	}
@@ -543,19 +544,19 @@ else:
 		return py_call("plot", {x, y}, kwargs);
 	}
 
-	py_obj plot(const arma_vec<double> &x, const arma_vec<double> &y, const std::string& spec={})
+	py_obj plot(const arma_vec<double> &x, const arma_vec<double> &y, const """ + namespace + r"""::string& spec={})
 	{
 		return py_call("plot", {x, y, spec});
 	}
 
 	py_obj plot(const arma_vec<double> &x1, const arma_vec<double> &y1,
-				const arma_vec<double> &x2, const arma_vec<double> &y2, const std::string& spec2={})
+				const arma_vec<double> &x2, const arma_vec<double> &y2, const """ + namespace + r"""::string& spec2={})
 	{
-		return py_call("plot", {x1, y1, std::string(), x2, y2, spec2});
+		return py_call("plot", {x1, y1, """ + namespace + r"""::string(), x2, y2, spec2});
 	}
 
-	py_obj plot(const arma_vec<double> &x1, const arma_vec<double> &y1, const std::string& spec1,
-				const arma_vec<double> &x2, const arma_vec<double> &y2, const std::string& spec2={})
+	py_obj plot(const arma_vec<double> &x1, const arma_vec<double> &y1, const """ + namespace + r"""::string& spec1,
+				const arma_vec<double> &x2, const arma_vec<double> &y2, const """ + namespace + r"""::string& spec2={})
 	{
 		return py_call("plot", {x1, y1, spec1, x2, y2, spec2});
 	}
@@ -659,15 +660,15 @@ else:
 		return py_call("subplot", {x, y, i}, kwargs);
 	}
 
-	py_obj colormap(py_obj fig, const std::string &name, int levels=64)
+	py_obj colormap(py_obj fig, const """ + namespace + r"""::string &name, int levels=64)
 	{
 		const size_t start = name.find('(');
-		if (start != std::string::npos)
+		if (start != """ + namespace + r"""::string::npos)
 		{
 			const size_t end = name.find(')');
-			if (end != std::string::npos && end>start)
+			if (end != """ + namespace + r"""::string::npos && end>start)
 			{
-				const std::string name_part(name.substr(start));
+				const """ + namespace + r"""::string name_part(name.substr(start));
 				const int levels_part = atoi(name.substr(start+1, end).c_str());
 				return colormap(fig, name_part, levels_part);
 			}
@@ -676,7 +677,7 @@ else:
 		return py_call_object(fig, "set_cmap", {cmap});
 	}
 
-	py_obj colormap(const std::string &name, int levels=64)
+	py_obj colormap(const """ + namespace + r"""::string &name, int levels=64)
 	{
 		return colormap(py_call("gci"), name, levels);
 	}
@@ -715,3 +716,5 @@ template <> int PyEngine::py_obj::npy_typenum<arma::cx_double>() { return NPY_CO
 
 #endif /* SPLOT_H_ */
 """
+
+    return result
