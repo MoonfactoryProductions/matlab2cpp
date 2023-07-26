@@ -479,11 +479,11 @@ def code(namespace = "std"):
    
        inline double isnan(const double m)
        {
-           return ::isnan(m)?1:0;
+           return ::isnan(m)?1.0:0.0;
        }
        inline float isnan(const float m)
        {
-           return ::isnan(m)?1:0;
+           return ::isnan(m)?1.0f:0.0f;
        }
    
        inline mat isnan(const mat &m)
@@ -558,7 +558,7 @@ def code(namespace = "std"):
        public:
            static inline """ + namespace + r"""::string to_string(const T &item)
            {
-               std::ostringstream ss;
+               """ + namespace + r"""::ostringstream ss;
                ss << item;
                return ss.str();
            }
@@ -570,7 +570,7 @@ def code(namespace = "std"):
        public:
            static inline """ + namespace + r"""::string to_string(const arma::Base<typename T1::elem_type,T1>& expr)
            {
-               std::ostringstream ss;
+               """ + namespace + r"""::ostringstream ss;
                const arma::Mat<typename T1::elem_type> X(expr);  // forcefully evaluate expression
    
                for(uword row=0; row < X.n_rows; ++row)
@@ -591,7 +591,7 @@ def code(namespace = "std"):
        public:
            static inline """ + namespace + r"""::string to_string(const arma::Mat<T1>& expr)
            {
-               std::ostringstream ss;
+               """ + namespace + r"""::ostringstream ss;
                const arma::Mat<T1> X(expr);  // forcefully evaluate expression
    
                for(uword row=0; row < X.n_rows; ++row)
@@ -612,7 +612,7 @@ def code(namespace = "std"):
        public:
            static inline """ + namespace + r"""::string to_string(const arma::SizeMat& expr)
            {
-               std::ostringstream ss;
+               """ + namespace + r"""::ostringstream ss;
                const arma::SizeMat X(expr);  // forcefully evaluate expression
    
                ss << X[0] << "x" << X[1]; 
